@@ -22,9 +22,9 @@ using namespace Asedio;
 class Casilla
 {
 public:
-    Casilla(int i = 0, int j = 0, int valE = 0, int val = 0) : row(i), col(j), valueExtractor(valE), value(val) {}
+    Casilla(int i = 0, int j = 0, int val = 0) : row(i), col(j), value(val) {}
     int row, col;
-    double value, valueExtractor;
+    double value;
 };
 class Coordenada
 {
@@ -120,17 +120,20 @@ double cellValue(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight
     int centroY = nCellsHeight / 2;
     float cellWidth = mapWidth / nCellsWidth;
     float cellHeight = mapHeight / nCellsHeight;
-
+    double puntuacion = 0;
     Casilla Centro(centroY, centroX);
     Defense *Extractor = defenses.front();
-    // Casilla CasillaExtractor = coordenadaToCasilla(Coordenada(Extractor->position.x,Extractor->position.y),c);
-    Vector3 posCentro = CasillaToCoordenada(Centro, cellWidth, cellHeight);
-    Vector3 posCasilla = CasillaToCoordenada(*C, cellWidth, cellHeight);
-    double distancia = _distance(posCentro, posCasilla);
+    Vector3 posicionExtractor = Extractor->position;
+    Casilla casillaExtractor = coordenadaToCasilla(Coordenada(posicionExtractor.x,posicionExtractor.y), cellWidth,cellHeight);
+    double distancia = _distance(posicionExtractor, CasillaToCoordenada(*C,cellWidth,cellHeight));
 
-    if (distancia == 0)
-        return 1;
-    return 1; // implemente aqui la función que asigna valores a las celdas
+    if ((std::abs(casillaExtractor.row - C->row) + std::abs(casillaExtractor.col - C->col) == 2))
+    {
+        std::cout << "DENTRO TEST \n";
+        return 2;
+    }
+    
+    return 1/distancia; // implemente aqui la función que asigna valores a las celdas
 }
 
 void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, std::list<Object *> obstacles, std::list<Defense *> defenses)
@@ -156,12 +159,11 @@ void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCell
     //*Asignar valor a las celdas para extraer minerales
     for (Casilla &C : Casillas)
     {
-        C.valueExtractor = cellValueExtractor(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
-        C.value = cellValue(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+        C.value = cellValueExtractor(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
     }
     //* Ordenar las casillas por valor
     Casillas.sort([](Casilla a, Casilla b) -> bool
-                  { return a.valueExtractor > b.valueExtractor; });
+                  { return a.value > b.value; });
 
     //* Tomamos el centro de estracción
     Defense *centroDeExtraccion = defenses.front();
@@ -179,6 +181,11 @@ void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCell
             freeCells[seleccionada.row][seleccionada.col] = false;
             Colocadas[0] = true;
         }
+    }
+
+    for (Casilla &C : Casillas)
+    {
+        C.value = cellValue(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
     }
 
     Casillas.sort([](Casilla a, Casilla b) -> bool
