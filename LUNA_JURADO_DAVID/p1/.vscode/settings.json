@@ -37,6 +37,11 @@
         "tuple": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "cstdarg": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "initializer_list": "cpp",
+        "cstdint": "cpp"
     }
 }

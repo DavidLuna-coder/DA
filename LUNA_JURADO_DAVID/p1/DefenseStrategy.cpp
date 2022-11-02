@@ -23,7 +23,8 @@ class Casilla
 {
 public:
     Casilla(int i = 0, int j = 0, int valE = 0, int val = 0) : row(i), col(j), valueExtractor(valE), value(val) {}
-    int row, col, valueExtractor, value;
+    int row, col;
+    double value, valueExtractor;
 };
 class Coordenada
 {
@@ -49,7 +50,7 @@ Casilla coordenadaToCasilla(const Coordenada &coord, float cellWidth, float cell
 
 bool esFactible(const Casilla casilla, bool **freeCells, double CellWidth, double CellHeight, double mapWidth, double mapHeight, List<Object *> obstacles, List<Defense *> defenses, Defense &defensa, bool *Colocadas)
 {
-    Vector3 pos = CasillaToCoordenada(casilla,CellWidth,CellHeight);
+    Vector3 pos = CasillaToCoordenada(casilla, CellWidth, CellHeight);
     int contador = 0;
     Vector3 C(CasillaToCoordenada(casilla, CellWidth, CellHeight));
     if (!freeCells[casilla.row][casilla.col] || C.x + defensa.radio > mapWidth || C.x - defensa.radio < 0 || C.y + defensa.radio > mapHeight || C.y - defensa.radio < 0)
@@ -69,7 +70,7 @@ bool esFactible(const Casilla casilla, bool **freeCells, double CellWidth, doubl
     for (Defense *currentDefense : defenses)
     {
 
-        if (Colocadas[contador] && _distance(pos , currentDefense->position) < (defensa.radio + currentDefense->radio))
+        if (Colocadas[contador] && _distance(pos, currentDefense->position) < (defensa.radio + currentDefense->radio))
         {
 
             return false;
@@ -80,51 +81,56 @@ bool esFactible(const Casilla casilla, bool **freeCells, double CellWidth, doubl
     return true;
 }
 
-// Asigna un valor a una casilla
-int cellValueExtractor(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, List<Object *> obstacles, List<Defense *> defenses)
+// Asigna un valor a una casilla segun el extractor
+double cellValueExtractor(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, List<Object *> obstacles, List<Defense *> defenses)
 {
-    int puntuacion = 0;
-    Vector3 posicion = CasillaToCoordenada(*C,nCellsWidth/mapWidth,nCellsHeight/mapHeight);
-
     int centroX = nCellsWidth / 2;
     int centroY = nCellsHeight / 2;
 
-    if ((centroX - C->row <= nCellsWidth / 3 && centroX - C->row >= 0))
-    {
-        puntuacion += 1;
-    }
+    float cellWidth = mapWidth / nCellsWidth;
+    float cellHeight = mapHeight / nCellsHeight;
+    Casilla Centro(centroY, centroX);
+    Vector3 posCentro = CasillaToCoordenada(Centro, cellWidth, cellHeight);
+    Vector3 posCasilla = CasillaToCoordenada(*C, cellWidth, cellHeight);
+    double distancia = _distance(posCentro, posCasilla);
 
-    if ((centroY - C->col <= nCellsHeight / 3 && centroY - C->col >= 0))
-    {
-        puntuacion += 1;
-    }
+    double distObs = 0;
 
-    for(auto obstacle : obstacles)
+    // for (Object *obstacle : obstacles)
+    // {
+    //     distObs += _distance(obstacle->position, posCasilla);
+    // }
+
+    double distObj = 0;
+
+    for (Object *obstacle : obstacles)
     {
-        if(_distance(posicion,obstacle->position) <= ((nCellsWidth + nCellsHeight)/2 * 10 && _distance(posicion,obstacle->position) > 1));
-        {
-            puntuacion+=1;
-        }
+        distObj += _distance(obstacle->position, posCasilla);
     }
-    return puntuacion; // implemente aqui la función que asigna valores a las celdas
+    if (distancia == 0)
+    {
+        return 2;
+    }
+    return 1 / distancia; // implemente aqui la función que asigna valores a las celdas
 }
 
-int cellValue(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, List<Object *> obstacles, List<Defense *> defenses)
+double cellValue(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, List<Object *> obstacles, List<Defense *> defenses)
 {
-    Vector3 posicion = CasillaToCoordenada(*C,nCellsWidth/mapWidth,nCellsHeight/mapHeight);
-    int puntuacion = 0;
     int centroX = nCellsWidth / 2;
     int centroY = nCellsHeight / 2;
+    float cellWidth = mapWidth / nCellsWidth;
+    float cellHeight = mapHeight / nCellsHeight;
 
-   
-    for(auto obstacle : obstacles)
-    {
-        if(_distance(posicion,obstacle->position) <= ((nCellsWidth + nCellsHeight)/2 * 10 && _distance(posicion,obstacle->position) > 1));
-        {
-            puntuacion+=1;
-        }
-    }
-    return puntuacion; // implemente aqui la función que asigna valores a las celdas
+    Casilla Centro(centroY, centroX);
+    Defense *Extractor = defenses.front();
+    // Casilla CasillaExtractor = coordenadaToCasilla(Coordenada(Extractor->position.x,Extractor->position.y),c);
+    Vector3 posCentro = CasillaToCoordenada(Centro, cellWidth, cellHeight);
+    Vector3 posCasilla = CasillaToCoordenada(*C, cellWidth, cellHeight);
+    double distancia = _distance(posCentro, posCasilla);
+
+    if (distancia == 0)
+        return 1;
+    return 1; // implemente aqui la función que asigna valores a las celdas
 }
 
 void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, std::list<Object *> obstacles, std::list<Defense *> defenses)
@@ -148,7 +154,7 @@ void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCell
     bool Colocadas[Casillas.size()];
     std::fill_n(Colocadas, Casillas.size(), false);
     //*Asignar valor a las celdas para extraer minerales
-    for (Casilla C : Casillas)
+    for (Casilla &C : Casillas)
     {
         C.valueExtractor = cellValueExtractor(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
         C.value = cellValue(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
@@ -174,7 +180,6 @@ void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCell
             Colocadas[0] = true;
         }
     }
-    std::cout << defenses.front()->position.x << " " << defenses.front()->position.y << "\n";
 
     Casillas.sort([](Casilla a, Casilla b) -> bool
                   { return a.value > b.value; });
@@ -198,7 +203,6 @@ void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCell
 
         contador++;
     }
-
 
     // int maxAttemps = 1000;
     // List<Defense *>::iterator currentDefense = defenses.begin();
