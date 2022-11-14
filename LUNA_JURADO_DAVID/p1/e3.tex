@@ -1,13 +1,53 @@
 \begin{lstlisting}
-// sustituya este codigo por su respuesta
-void placeDefenses(...) {
+void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, std::list<Object *> obstacles, std::list<Defense *> defenses)
+{
 
-    List<Defense*>::iterator currentDefense = defenses.begin();
-    while(currentDefense != defenses.end() && maxAttemps > 0) {
+    float cellWidth = mapWidth / nCellsWidth;
+    float cellHeight = mapHeight / nCellsHeight;
+    int nCasillas = nCellsWidth * nCellsHeight;
+    std::list<Casilla> Casillas;
+    int n = 0;
+    Casilla seleccionada;
+    int contador = 0;
 
-        (*currentDefense)->position.x = ((int)(_RAND2(nCellsWidth))) * cellWidth + cellWidth * 0.5f;
-        ...
-        ++currentDefense;
+    // Meter todas las casillas en el conjunto de Casillas
+    for (size_t i = 0; i < nCellsHeight; i++)
+    {
+        for (size_t j = 0; j < nCellsWidth; j++)
+        {
+            Casillas.emplace_back(Casilla(i, j));
+        }
+    }
+
+    bool Colocadas[Casillas.size()]; //Vector de Defensas Colocadas.
+
+    std::fill_n(Colocadas, Casillas.size(), false);
+    //*Asignar valor a las celdas para el extractor de minerales
+    for (Casilla &C : Casillas)
+    {
+        C.value = cellValueExtractor(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
+    }
+    //* Ordenar las casillas por valor
+    Casillas.sort([](Casilla a, Casilla b) -> bool
+                  { return a.value > b.value; });
+
+    //* Tomamos el centro de extraccion
+    Defense *centroDeExtraccion = defenses.front();
+    std::list<Casilla> CasillasExtractor(Casillas);
+
+    //* Colocamos el extractor
+    while (!CasillasExtractor.empty() && !Colocadas[contador])
+    {
+        seleccionada = CasillasExtractor.front();
+
+        CasillasExtractor.pop_front();
+
+        if (esFactible(seleccionada, freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, *centroDeExtraccion, Colocadas))
+        {
+            centroDeExtraccion->position = CasillaToCoordenada(seleccionada, cellWidth, cellHeight);
+            freeCells[seleccionada.row][seleccionada.col] = false;
+            Colocadas[0] = true;
+        }
     }
 }
 \end{lstlisting}

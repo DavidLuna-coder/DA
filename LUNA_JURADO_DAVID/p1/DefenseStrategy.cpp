@@ -81,7 +81,7 @@ bool esFactible(const Casilla casilla, bool **freeCells, double CellWidth, doubl
     return true;
 }
 
-// Asigna un valor a una casilla segun el extractor
+//* Asigna un valor a una casilla segun el extractor
 double cellValueExtractor(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, List<Object *> obstacles, List<Defense *> defenses)
 {
     int centroX = nCellsWidth / 2;
@@ -92,26 +92,15 @@ double cellValueExtractor(Casilla *C, bool **freeCells, int nCellsWidth, int nCe
     Casilla Centro(centroY, centroX);
     Vector3 posCentro = CasillaToCoordenada(Centro, cellWidth, cellHeight);
     Vector3 posCasilla = CasillaToCoordenada(*C, cellWidth, cellHeight);
+
     double distancia = _distance(posCentro, posCasilla);
 
-    double distObs = 0;
 
-    // for (Object *obstacle : obstacles)
-    // {
-    //     distObs += _distance(obstacle->position, posCasilla);
-    // }
-
-    double distObj = 0;
-
-    for (Object *obstacle : obstacles)
-    {
-        distObj += _distance(obstacle->position, posCasilla);
-    }
     if (distancia == 0)
     {
         return 2;
     }
-    return 1 / distancia; // implemente aqui la función que asigna valores a las celdas
+    return 1 / distancia; 
 }
 
 double cellValue(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, List<Object *> obstacles, List<Defense *> defenses)
@@ -120,8 +109,6 @@ double cellValue(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight
     int centroY = nCellsHeight / 2;
     float cellWidth = mapWidth / nCellsWidth;
     float cellHeight = mapHeight / nCellsHeight;
-    double puntuacion = 0;
-    Casilla Centro(centroY, centroX);
     Defense *Extractor = defenses.front();
     Vector3 posicionExtractor = Extractor->position;
     Casilla casillaExtractor = coordenadaToCasilla(Coordenada(posicionExtractor.x,posicionExtractor.y), cellWidth,cellHeight);
@@ -129,7 +116,6 @@ double cellValue(Casilla *C, bool **freeCells, int nCellsWidth, int nCellsHeight
 
     if ((std::abs(casillaExtractor.row - C->row) + std::abs(casillaExtractor.col - C->col) == 2))
     {
-        std::cout << "DENTRO TEST \n";
         return 2;
     }
     
@@ -156,7 +142,7 @@ void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCell
     }
     bool Colocadas[Casillas.size()];
     std::fill_n(Colocadas, Casillas.size(), false);
-    //*Asignar valor a las celdas para extraer minerales
+    //*Asignar valor a las celdas para el extractor de minerales
     for (Casilla &C : Casillas)
     {
         C.value = cellValueExtractor(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
@@ -165,11 +151,12 @@ void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCell
     Casillas.sort([](Casilla a, Casilla b) -> bool
                   { return a.value > b.value; });
 
-    //* Tomamos el centro de estracción
+    //* Tomamos el centro de extracción
     Defense *centroDeExtraccion = defenses.front();
     std::list<Casilla> CasillasExtractor(Casillas);
 
-    while (!CasillasExtractor.empty() && !Colocadas[contador])
+    //* Colocamos el extractor
+    while (!CasillasExtractor.empty() && !Colocadas[0])
     {
         seleccionada = CasillasExtractor.front();
 
@@ -183,15 +170,18 @@ void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCell
         }
     }
 
+    //* Reasignamos el valor a las casillas para el resto de defensas
     for (Casilla &C : Casillas)
     {
         C.value = cellValue(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
     }
 
+    //* Reordenamos las casillas
     Casillas.sort([](Casilla a, Casilla b) -> bool
                   { return a.value > b.value; });
     contador = 0;
 
+    //* Colocamos todas las defensas
     for (auto currentDefense = defenses.begin(); currentDefense != defenses.end(); currentDefense++)
     {
 
