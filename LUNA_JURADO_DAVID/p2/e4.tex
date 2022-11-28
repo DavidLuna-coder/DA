@@ -1,15 +1,29 @@
 \begin{lstlisting}
-// sustituya este codigo por su respuesta
-void selectDefenses(...) {
+void reconstruirCamino(int** tabla, Defensa* defensas, int ases, int tam, list<Defensa*> defenses)
+{
+    
+    // Reconstruir camino
+    int i = tam - 1;
+    int j = ases;
+    while (i >= 0 && j > 0)
+    {
+        if (i > 0)
+        {
+            if (tabla[i][j] != tabla[i - 1][j])
+            {
+                selectedIDs.push_front(defensas[i]->id);
 
-    unsigned int cost = 0;
-    std::list<Defense*>::iterator it = defenses.begin();
-    while(it != defenses.end()) {
-        if(cost + (*it)->cost <= ases) {
-            selectedIDs.push_back((*it)->id);
-            cost += (*it)->cost;
+                j -= defensas[i]->cost;
+            }
         }
-        ++it;
+        if (i == 0 && tabla[i][j] > 0)
+        {
+            selectedIDs.push_front(defensas[i]->id);
+        }
+        i--;
     }
+    selectedIDs.push_front(defenses.front()->id); //Agregamos el centro de extraccion a la lista, no estaba en la tabla de subproblemas resueltos porque siempre se coloca
+
 }
+
 \end{lstlisting}

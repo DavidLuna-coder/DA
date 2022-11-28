@@ -12,9 +12,8 @@ float defenseValue(Defense *d)
 {
     float valor = 0;
 
-    float dps = d->damage/d->attacksPerSecond;
-    valor = d->health * 0.4 + dps*0.4 + d->range * 0.15 + d->dispersion * 0.05;
-
+    float dps = d->damage / d->attacksPerSecond;
+    valor = d->health * 0.4 + dps * 0.4 + d->range * 0.15 + d->dispersion * 0.05;
     return valor;
 }
 void DEF_LIB_EXPORTED selectDefenses(std::list<Defense *> defenses, unsigned int ases, std::list<int> &selectedIDs, float mapWidth, float mapHeight, std::list<Object *> obstacles)
@@ -91,6 +90,7 @@ void DEF_LIB_EXPORTED selectDefenses(std::list<Defense *> defenses, unsigned int
                 if (tabla[i][j] != tabla[i - 1][j])
                 {
                     selectedIDs.push_front(defensas[i]->id);
+                    coste += defensas[i]->cost;
 
                     j -= defensas[i]->cost;
                 }
@@ -98,10 +98,12 @@ void DEF_LIB_EXPORTED selectDefenses(std::list<Defense *> defenses, unsigned int
             if (i == 0 && tabla[i][j] > 0)
             {
                 selectedIDs.push_front(defensas[i]->id);
+                coste += defensas[i]->cost;
             }
             i--;
         }
         selectedIDs.push_front(defenses.front()->id);
+        coste += defenses.front()->cost;
         // for (size_t i = 0; i < tam; i++)
         // {
         //     std::cout<< "[ ";

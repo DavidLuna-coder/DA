@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2022.11.12)  12 NOV 2022 13:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2022.11.12)  21 NOV 2022 12:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -145,10 +145,7 @@ File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count273
 \l__pdf_internal_box=\box52
 )
-(./p1.aux
-LaTeX Info: Redefining \. on input line 4.
-LaTeX Info: Redefining \% on input line 4.
-)
+No file p1.aux.
 \openout1 = `p1.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 31.
@@ -165,7 +162,6 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 31.
 LaTeX Font Info:    ... okay on input line 31.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 31.
 LaTeX Font Info:    ... okay on input line 31.
-
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -232,40 +228,32 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 33.
 
-(../autor.tex) (./e1.tex
-<./CellValueExtractor.png, id=1, 1285.80376pt x 472.76625pt>
-File: ./CellValueExtractor.png Graphic file (type png)
-<use ./CellValueExtractor.png>
-Package pdftex.def Info: ./CellValueExtractor.png  used on input line 7.
-(pdftex.def)             Requested size: 350.33727pt x 128.81001pt.
-) (./e2.tex) (./e3.tex
+(../autor.tex) (./e1.tex) (./e2.tex) (./e3.tex
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <8> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 2.
- [1
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 3.
+) (./e4.tex) (./e5.tex) (./e6.tex [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./CellValueExtractor.png (
-PNG copy)>]) (./e4.tex)
-(./e5.tex) [2] (./e6.tex [3]) [4] (./p1.aux
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]) [2] (./p1.aux
 LaTeX Info: Redefining \. on input line 4.
 LaTeX Info: Redefining \% on input line 4.
 ) ) 
 Here is how much of TeX's memory you used:
- 5487 strings out of 480185
- 81262 string characters out of 5894212
- 935317 words of memory out of 5000000
- 23399 multiletter control sequences out of 15000+600000
+ 5402 strings out of 480185
+ 80080 string characters out of 5894212
+ 705317 words of memory out of 5000000
+ 23318 multiletter control sequences out of 15000+600000
  472630 words of font info for 40 fonts, out of 8000000 for 9000
  40 hyphenation exceptions out of 8191
- 55i,7n,69p,583b,1858s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,7n,69p,583b,1758s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on p1.pdf (4 pages, 194357 bytes).
+Output written on p1.pdf (2 pages, 64088 bytes).
 PDF statistics:
- 43 PDF objects out of 1000 (max. 8388607)
- 25 compressed objects within 1 object stream
+ 36 PDF objects out of 1000 (max. 8388607)
+ 21 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

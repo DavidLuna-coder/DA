@@ -1,3 +1,11 @@
-$$ f(radio,rango,salud)=(radio+rango)-1+rango^2+3\frac{radio}{salud} $$
+% $$ f(radio,rango,salud)=(radio+rango)-1+rango^2+3\frac{radio}{salud} $$
 
-Escriba aquí su respuesta al ejercicio 1.
+% Escriba aquí su respuesta al ejercicio 1.
+% valor = d->health · 0.4 + dps · 0.4 + d->range · 0.15 + d->dispersion · 0.05;
+$$f(h, d, aps, r, disp) = h * 0.4  + (\frac{d}{aps}) * 0.4 + r * 0.15 \\ 
++ disp * 0.05$$
+
+Donde $h$ es la salud de la defensa, $d$ el daño, $aps$ los ataques por segundo, $r$ el rango y $disp$ la dispersión.
+
+La función es una ponderación arbitraria de las diferentes características de la defensa, se ha considerado esta estrategia debido a 
+que se obtenía el mejor resultado en las pruebas realizadas

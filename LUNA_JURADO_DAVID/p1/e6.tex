@@ -1,87 +1,13 @@
 \begin{lstlisting}
-void DEF_LIB_EXPORTED placeDefenses(bool **freeCells, int nCellsWidth, int nCellsHeight, float mapWidth, float mapHeight, std::list<Object *> obstacles, std::list<Defense *> defenses)
-{
-    
-        float cellWidth = mapWidth / nCellsWidth;
-        float cellHeight = mapHeight / nCellsHeight;
-        int nCasillas = nCellsWidth * nCellsHeight;
-        std::list<Casilla> Casillas;
-        int n = 0;
-        Casilla seleccionada;
-        int contador = 0;
-        //* Meter todas las casillas en el conjunto de Casillas
-        for (size_t i = 0; i < nCellsHeight; i++)
-        {
-            for (size_t j = 0; j < nCellsWidth; j++)
-            {
-                Casillas.emplace_back(Casilla(i, j));
-            }
-        }
-        bool Colocadas[Casillas.size()];
-        std::fill_n(Colocadas, Casillas.size(), false);
+// sustituya este codigo por su respuesta
+void placeDefenses(...) {
 
-        //Primer algorimo voraz
-        //*Asignar valor a las celdas para el extractor de minerales
-        for (Casilla &C : Casillas)
-        {
-            C.value = cellValueExtractor(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
-        }
+    List<Defense*>::iterator currentDefense = defenses.begin();
+    while(currentDefense != defenses.end() && maxAttemps > 0) {
 
-        //* Ordenar las casillas por valor
-        Casillas.sort([](Casilla a, Casilla b) -> bool
-                      { return a.value > b.value; });
-    
-        //* Tomamos el centro de extraccion
-        Defense *centroDeExtraccion = defenses.front();
-        std::list<Casilla> CasillasExtractor(Casillas);
-    
-        //* Colocamos el extractor
-        while (!CasillasExtractor.empty() && !Colocadas[0])
-        {
-            seleccionada = CasillasExtractor.front();
-    
-            CasillasExtractor.pop_front();
-    
-            if (esFactible(seleccionada, freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, *centroDeExtraccion, Colocadas))
-            {
-                centroDeExtraccion->position = CasillaToCoordenada(seleccionada, cellWidth, cellHeight);
-                freeCells[seleccionada.row][seleccionada.col] = false;
-                Colocadas[0] = true;
-            }
-        }
-
-        // Segundo algorimo voraz
-    
-        //* Reasignamos el valor a las casillas para el resto de defensas
-        for (Casilla &C : Casillas)
-        {
-            C.value = cellValue(&C, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
-        }
-    
-        //* Reordenamos las casillas
-        Casillas.sort([](Casilla a, Casilla b) -> bool
-                      { return a.value > b.value; });
-        contador = 0;
-    
-        //* Colocamos todas las defensas
-        for (auto currentDefense = defenses.begin(); currentDefense != defenses.end(); currentDefense++)
-        {
-    
-            while (!Casillas.empty() && !Colocadas[contador])
-            {
-    
-                seleccionada = Casillas.front();
-                Casillas.pop_front();
-                if (esFactible(seleccionada, freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, *(*currentDefense), Colocadas))
-                {
-                    (*currentDefense)->position = CasillaToCoordenada(seleccionada, cellWidth, cellHeight);
-                    Colocadas[contador] = true;
-                    freeCells[seleccionada.row][seleccionada.col] = false;
-                }
-            }
-    
-            contador++;
-        }
+        (*currentDefense)->position.x = ((int)(_RAND2(nCellsWidth))) * cellWidth + cellWidth * 0.5f;
+        ...
+        ++currentDefense;
+    }
 }
-
 \end{lstlisting}
