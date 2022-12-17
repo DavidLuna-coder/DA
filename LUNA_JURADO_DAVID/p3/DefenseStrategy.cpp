@@ -7,7 +7,6 @@
 #include "../simulador/Asedio.h"
 #include "../simulador/Defense.h"
 #include "cronometro.h"
-
 using namespace Asedio;
 
 class Casilla
@@ -150,10 +149,20 @@ void rellenarVectorConLista(Casilla *vectorCasillas, std::list<Casilla> Casillas
     }
 }
 
+void rellenarVectorConLista(std::vector<Casilla> &vectorCasillas, std::list<Casilla> Casillas)
+{
+    auto iterador = Casillas.begin();
+    for (size_t i = 0; i < Casillas.size(); i++)
+    {
+        vectorCasillas[i] = *iterador;
+        iterador++;
+    }
+}
+
 void ordenacionInsercion(Casilla *v, int i, int j)
 {
     Casilla aux;
-    for (int l = i+1; l <= j; l++)
+    for (int l = i + 1; l <= j; l++)
     {
         int m = l;
         bool colocado = 0;
@@ -219,14 +228,15 @@ void DevoradorOrdenacionFusion(Casilla *vectorCasillas, unsigned tamaño, bool *
     Casilla w[tamaño];
     ordenacionFusion(vectorCasillas, w, 0, tamaño - 1);
     int i = 0;
-    Casilla  seleccionada;
+    Casilla seleccionada;
+
     for (auto currentDefense = defenses.begin(); currentDefense != defenses.end(); currentDefense++)
     {
 
         while (i < tamaño && !Colocadas[contador])
         {
 
-            seleccionada = vectorCasillas[i];  //* Función de selección
+            seleccionada = vectorCasillas[i]; //* Función de selección
             i++;
 
             if (esFactible(seleccionada, freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, *(*currentDefense), Colocadas))
@@ -240,15 +250,14 @@ void DevoradorOrdenacionFusion(Casilla *vectorCasillas, unsigned tamaño, bool *
     }
 }
 
-
-int pivote(Casilla*v, int i, int j)
+int pivote(Casilla *v, int i, int j)
 {
     int p = i;
-    int x = v[i].value;
+    Casilla x = v[i];
     Casilla aux;
     for (int k = i + 1; k <= j; k++)
     {
-        if (v[k].value >= x)
+        if (v[k].value >= x.value)
         {
             p = p + 1;
             aux = v[p];
@@ -278,19 +287,47 @@ void ordenacionRapida(Casilla *v, int i, int j)
 void DevoradorOrdenacionRapida(Casilla *vectorCasillas, unsigned tamaño, bool **freeCells, double cellWidth, double cellHeight, double mapWidth, double mapHeight, List<Object *> obstacles, List<Defense *> defenses, bool *Colocadas)
 {
     int contador = 0;
-    Casilla w[tamaño];
+
     ordenacionRapida(vectorCasillas, 0, tamaño - 1);
     int i = 0;
-    Casilla  seleccionada;
+    Casilla seleccionada;
+
     for (auto currentDefense = defenses.begin(); currentDefense != defenses.end(); currentDefense++)
     {
-
         while (i < tamaño && !Colocadas[contador])
         {
 
-            seleccionada = vectorCasillas[i];  //* Función de selección
+            seleccionada = vectorCasillas[i]; //* Función de selección
             i++;
 
+            if (esFactible(seleccionada, freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, *(*currentDefense), Colocadas))
+            {
+                (*currentDefense)->position = CasillaToCoordenada(seleccionada, cellWidth, cellHeight);
+                Colocadas[contador] = true;
+            }
+        }
+
+        contador++;
+    }
+}
+
+void DevoradorMonticulo(std::vector<Casilla> Casillas, unsigned tamaño, bool **freeCells, double cellWidth, double cellHeight, double mapWidth, double mapHeight, List<Object *> obstacles, List<Defense *> &defenses, bool *Colocadas)
+{
+    int contador = 0;
+    std::make_heap(Casillas.begin(), Casillas.end(), [](Casilla a, Casilla b) -> bool
+                   { return a.value < b.value; });
+
+    Casilla seleccionada;
+    for (auto currentDefense = defenses.begin(); currentDefense != defenses.end(); currentDefense++)
+    {
+
+        while (!Casillas.empty() && !Colocadas[contador])
+        {
+
+            seleccionada = Casillas.at(0);
+            std::pop_heap(Casillas.begin(), Casillas.end(), [](Casilla a, Casilla b)
+                          { return a.value < b.value; });
+            Casillas.pop_back();
             if (esFactible(seleccionada, freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, *(*currentDefense), Colocadas))
             {
                 (*currentDefense)->position = CasillaToCoordenada(seleccionada, cellWidth, cellHeight);
@@ -314,6 +351,7 @@ void DEF_LIB_EXPORTED placeDefenses3(bool **freeCells, int nCellsWidth, int nCel
     int n = 0;
     int contador = 0;
     //* Meter todas las casillas en el conjunto de Casillas
+
     for (size_t i = 0; i < nCellsHeight; i++)
     {
         for (size_t j = 0; j < nCellsWidth; j++)
@@ -324,7 +362,8 @@ void DEF_LIB_EXPORTED placeDefenses3(bool **freeCells, int nCellsWidth, int nCel
     bool Colocadas[Casillas.size()];
     std::fill_n(Colocadas, Casillas.size(), false);
     //*Asignar valor a las celdas para extraer minerales
-    for (Casilla C : Casillas)
+
+    for (Casilla &C : Casillas)
     {
         C.value = defaultCellValue(C.row, C.col, freeCells, nCellsWidth, nCellsHeight, mapWidth, mapHeight, obstacles, defenses);
     }
@@ -339,40 +378,60 @@ void DEF_LIB_EXPORTED placeDefenses3(bool **freeCells, int nCellsWidth, int nCel
     long int r = 0;
     const double e_abs = 0.01;
     double e_rel = 0.001;
+    double t;
+    // c.activar();
+    // //* Devorador
+    // do
+    // {
+    //     DevoradorSinOrdenar(CasillasSinOrdenar, freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, Colocadas);
+    //     ++r;
+    // } while (c.tiempo() < e_abs / e_rel + e_abs);
+    // c.parar();
+    // double t = c.tiempo() / r;
 
-    c.activar();
-    //* Devorador
-    do
-    {
-        DevoradorSinOrdenar(CasillasSinOrdenar, freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, Colocadas);
-        ++r;
-    } while (c.tiempo() < e_abs / e_rel + e_abs);
-    c.parar();
-    double t = c.tiempo() / r;
+    // std::cout << t << std::endl;
 
-    std::cout << "----------------------- Devorador sin ordenar -------------------------\n"
-              << "Tamaño de Mapa : " << mapWidth * mapHeight << "\n "
-              << "Tiempo: " << t
-              << "\n-----------------------------------------------------------------------"
-              << std::endl;
+    // std::fill_n(Colocadas, Casillas.size(), false);
+
+    // rellenarVectorConLista(vectorCasillas, Casillas);
+
+    // c.activar();
+    // do
+    // {
+    //     DevoradorOrdenacionFusion(vectorCasillas, Casillas.size(), freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, Colocadas);
+    //     ++r;
+    // } while (c.tiempo() < e_abs / e_rel + e_abs);
+    // c.parar();
+    // t = c.tiempo() / r;
+    // std::cout << t << std::endl;
+    // std::fill_n(Colocadas, Casillas.size(), false);
+    // rellenarVectorConLista(vectorCasillas, Casillas);
+
+    // c.activar();
+    // do
+    // {
+    //     DevoradorOrdenacionRapida(vectorCasillas, Casillas.size(), freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, Colocadas);
+    //     ++r;
+    // } while (c.tiempo() < e_abs / e_rel + e_abs);
+    // c.parar();
+    // t = c.tiempo() / r;
+
+    // std::cout << t << std::endl;
 
     std::fill_n(Colocadas, Casillas.size(), false);
+    std::vector<Casilla> CasillasVector(Casillas.size());
 
-    rellenarVectorConLista(vectorCasillas, Casillas);
-
+    rellenarVectorConLista(CasillasVector, Casillas);
     c.activar();
     do
     {
-        DevoradorOrdenacionFusion(vectorCasillas, Casillas.size(), freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, Colocadas);
+        DevoradorMonticulo(CasillasVector, Casillas.size(), freeCells, cellWidth, cellHeight, mapWidth, mapHeight, obstacles, defenses, Colocadas);
         ++r;
     } while (c.tiempo() < e_abs / e_rel + e_abs);
     c.parar();
     t = c.tiempo() / r;
-    std::cout << "----------------------- Devorador Ordenado Fusión -------------------------\n"
-              << "Tamaño de Mapa : " << mapWidth * mapHeight << "\n "
-              << "Tiempo: " << t
-              << "\n--------------------------------------------------------------------------"
-              << std::endl;
+
+    std::cout << (nCellsWidth * nCellsHeight) << '\t' << c.tiempo() / r << '\t' << c.tiempo() * 2 / r << '\t' << c.tiempo() * 3 / r << '\t' << c.tiempo() * 4 / r << std::endl;
 
     // float cellWidth = mapWidth / nCellsWidth;
     // float cellHeight = mapHeight / nCellsHeight;

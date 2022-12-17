@@ -1,1 +1,78 @@
-Escriba aquí su respuesta al ejercicio 2.
+\begin{lstlisting}
+void ordenacionInsercion(int *v, int i, int j)
+{
+    int aux = 0;
+    int k;
+    for (int l = i + 1; l <= j; l++)
+    {
+        bool colocado = false;
+        int m = l;
+        for (k = l - 1; k >= i && !colocado; k--)
+        {
+            if (v[m] > v[k])
+            {
+                aux = v[k];
+                v[k] = v[m];
+                v[m] = aux;
+                m--;
+            }
+        }
+    }
+}
+void fusion(int *v, int *w, int i, int k, int j)
+{
+    int n = j - i + 1;
+    int p = i;
+    int q = k + 1;
+    for (int l = 0; l < n; l++)
+    {
+        if (p <= k && (q > j || v[p] > v[q]))
+        {
+            w[l] = v[p];
+            p = p + 1;
+        }
+        else
+        {
+            w[l] = v[q];
+            q = q + 1;
+        }
+    }
+
+    for (int l = 0; l < n; l++)
+    {
+        v[i + l] = w[l];
+    }
+}
+void ordenacionFusion(int *v, int *w, int i, int j)
+{
+    int n = j - i + 1;
+    if (n <= 3)
+    {
+        ordenacionInsercion(v, i, j);
+    }
+    else
+    {
+        int k = i - 1 + n / 2;
+        ordenacionFusion(v, w, i, k);
+        ordenacionFusion(v, w, k + 1, j);
+        fusion(v, w, i, k, j);
+    }
+}
+
+
+void ordenacionRapida(int *v, int i, int j)
+{
+    int n = j - i + 1;
+    if (n <= 3)
+    {
+        ordenacionInsercion(v, i, j);
+    }
+    else
+    {
+        int p = pivote(v, i, j);
+        ordenacionRapida(v, i, p - 1);
+        ordenacionRapida(v, p + 1, j);
+    }
+}
+
+\end{lstlisting}

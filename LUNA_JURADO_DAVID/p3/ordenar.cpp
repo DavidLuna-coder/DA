@@ -123,6 +123,8 @@ void cajaNegra(int *v, int n, void(*ordenacion)(int*,int,int))
         permutaciones, permutaciones + n));
 }
 
+
+// La función prueba todas las permutaciones posibles que existen a partir de un vector ordenada ascendentemente, y las ordena de una en una para comprobar que funciona la función de ordenacion pasada por parámetro
 void cajaNegra(int *v, int n, void(*ordenacion)(int*,int*,int,int))
 {
     int copia[n];
@@ -134,7 +136,7 @@ void cajaNegra(int *v, int n, void(*ordenacion)(int*,int*,int,int))
         memcpy(copia, permutaciones, n * sizeof(int));
         ordenacion(copia, w,0, n - 1);
         std::cout << "Vector Original\n";
-        display(permutaciones, n);
+        display(permutaciones, n); //La función display muestra un vector por pantalla
         std::cout << "Ordenado\n";
         display(copia, n);
     } while (std::next_permutation(
@@ -143,14 +145,11 @@ void cajaNegra(int *v, int n, void(*ordenacion)(int*,int*,int,int))
 
 int main()
 {
-    int n = 10;
-    int numeros[n] = {1, 2, 3, 4, 5,6,7,8,9,10};
-    int aux[5];
-    // ordenacionInsercion(numeros, 2, 4);
-    // ordenacionFusion(numeros,aux,0,4);
+    int n = 5;
+    int numeros[n] = {1, 2, 3, 4, 5};
 
-    cajaNegra(numeros,n,ordenacionInsercion);    
     cajaNegra(numeros,n,ordenacionRapida);    
+    cajaNegra(numeros,n,ordenacionFusion);    
 
     std::cout << std::endl;
 

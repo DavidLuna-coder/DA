@@ -1,21 +1,21 @@
-# Codificaci髇 ISO Latin-1 y terminal EPS.
+# Codificaci贸n ISO Latin-1 y terminal EPS.
 
 set encoding iso_8859_1
 set terminal postscript eps
 
-# T韙ulo de cada eje.
+# T铆tulo de cada eje.
  
-set xlabel "n (n鷐ero de celdas)"
+set xlabel "n (n煤mero de celdas)"
 set ylabel "t(n) (tiempo en segundos)"
 
-# Estilo de presentaci髇 (puntos interpolados linealmente).
+# Estilo de presentaci贸n (puntos interpolados linealmente).
 
 #set data style linespoints
 
-# Creaci髇 de los ficheros EPS.
+# Creaci贸n de los ficheros EPS.
 
 set output "graphic.eps"
-plot 'data.txt' using 1:2 title "Sin pre-ordenaci髇" with lines, \
-     '' using 1:3 title "Fusi髇" with lines, \
-	 '' using 1:4 title "R醦ida" with lines, \
-	 '' using 1:5 title "Mont韈ulo" with lines
+plot 'data.txt' using 1:2 title "Sin pre-ordenaci贸n" with lines, \
+     '' using 1:3 title "Fusi贸n" with lines, \
+	 '' using 1:4 title "R谩pida" with lines, \
+	 '' using 1:5 title "Mont铆culo" with lines

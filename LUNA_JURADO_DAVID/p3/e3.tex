@@ -1,1 +1,42 @@
-Escriba aquí su respuesta al ejercicio 3.
+\begin{lstlisting}
+void ordenacionInsercion(int *v, int i, int j)
+{
+    int aux = 0;
+    int k;
+    for (int l = i + 1; l <= j; l++)
+    {
+        bool colocado = false;
+        int m = l;
+        for (k = l - 1; k >= i && !colocado; k--)
+        {
+            if (v[m] > v[k])
+            {
+                aux = v[k];
+                v[k] = v[m];
+                v[m] = aux;
+                m--;
+            }
+        }
+    }
+}
+
+int pivote(int *v, int i, int j)
+{
+    int p = i;
+    int x = v[i];
+    int aux;
+    for (int k = i + 1; k <= j; k++)
+    {
+        if (v[k] >= x)
+        {
+            p = p + 1;
+            aux = v[p];
+            v[p] = v[k];
+            v[k] = aux;
+        }
+    }
+    v[i] = v[p];
+    v[p] = x;
+    return p;
+}
+\end{lstlisting}

@@ -1,1 +1,33 @@
-Escriba aquí su respuesta al ejercicio 5.
+Siendo $n$ el número total de celdas de un mapa y $d$ el número de defensas que tenemos que colocar:
+
+En un algoritmo voraz las operación crítica es la operación de selección.
+
+Si no preordenamos las defensas, la función de selección será de orden $O(n)$, ya que la función debe recorrer toda la lista de casillas para determinar cual es la mejor.
+
+Esa función será ejecutada un total de $d$ veces en el mejor caso, ya que todas las defensas se podrían colocar en la casilla que se seleccionase.
+En el peor caso se ejecutará un total de n veces, si se acaban seleccionando todas las casillas.
+
+En cada iteración se elimina una casilla de la lista por lo que cada vez el tiempo de ejecución de la función de selección disminuye en una comparación.
+Por lo tanto:
+
+\[ t(n) = t(n-1) + 1 = \displaystyle\sum_{i=1}^{n}{n-i} = \frac{n^2 -n}{2} \in O(n^2) \]
+
+En el caso de que se ordenen la lista de casilla previamente obtenemos un tiempo de selección de $O(1)$, que al repetirse como máximo $n$ veces tendríamos un tiempo de $O(n)$ para
+todos los algoritmos en los que se preordene la lista de casillas.
+Por lo tanto, para decantarnos por uno de ellos tendremos que analizar el orden de complejidad de los propios algoritmos de ordenación.
+
+Suponiendo un mapa cuadrado, el algoritmo de ordenación por fusión siempre podrá dividir el vector de casillas de forma equitativa, por lo que, tal 
+y como se analizó en clase obtenemos que el orden del algoritmo en el peor caso es de:
+
+Si $n>n_0$, donde en este caso $n_0 = 3$
+\[t(n) = 2t(\frac{n}{2})+n\] 
+\[t(n) \in O(n\log{n})\]
+
+Analizando el algoritmo de ordenacion rápida en el peor caso, (el pivote queda en alguno de los extremos) obtenemos un orden de $O(n^2)$
+pero en el caso promedio y en el mejor caso obtenemos un orden perteneciente a $O(n\log{n})$
+
+En caso de usar un montículo la función de selección no es $O(1)$ si no de $O(\log{n})$.
+La inserción de elementos en un montículo es de orden $O(log{n})$ en el peor caso, como hay que insertar $n$ elementos acaba siendo $O(n\log{n})$.
+Y como en el peor caso se extraen $n$ elementos del montículo, pero como el arbol se va haciendo más pequeño en cada iteración el orden es $O(\log{n!})$
+
+Como en el caso peor en la inserción de un montículo tomaremos ese como nuestro algoritmo elegido.
