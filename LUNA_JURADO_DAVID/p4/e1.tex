@@ -1,1 +1,13 @@
-Escriba aquí su respuesta al ejercicio 1.
+Este es un algoritmo de búsqueda de ruta A* (A star), que se utiliza para encontrar una ruta óptima entre dos puntos en un mapa.
+
+La función recibe como parámetros dos nodos: el nodo de origen y el nodo de destino, además de información sobre el tamaño del mapa y una matriz de costos adicionales. También recibe una lista vacía, que se llenará con la ruta encontrada.
+
+La función utiliza dos listas: una lista "Abierta" y una lista "Cerrada". La lista "Abierta" contiene los nodos que todavía deben explorarse y la lista "Cerrada" contiene los nodos que ya han sido explorados.
+
+El algoritmo comienza agregando el nodo de origen a la lista "Abierta". A continuación, se itera hasta que se haya encontrado el nodo de destino o hasta que la lista "Abierta" esté vacía o se haya alcanzado un límite máximo de iteraciones para garantizar que los nodos estén conectados.
+
+En cada iteración, se selecciona el nodo de menor costo en la lista "Abierta" y se lo agrega a la lista "Cerrada". Si este nodo es el nodo de destino, se recupera el camino completo utilizando la información de parentesco de cada nodo y se termina el algoritmo. Si el nodo seleccionado no es el nodo de destino, se iteran a través de sus nodos adyacentes y se calcula el costo de llegar a ellos desde el nodo actual. Si el costo es menor que el costo previamente calculado para llegar a ese nodo, se actualiza el costo y se establece el nodo actual como el nodo padre. Si el nodo adyacente no está en la lista "Abierta" ni en la lista "Cerrada", se agrega a la lista "Abierta".
+
+La función utiliza la función "NodeCompare" para ordenar la lista "Abierta" en cada iteración y la función "recuperaCamino" para recuperar la ruta completa desde el nodo de origen hasta el nodo de destino una vez que se ha encontrado.
+
+Para llevar a cabo la implementación del algoritmo A*, se utiliza la estructura "AStarNode", que representa un nodo en el mapa. Esta estructura incluye información sobre la posición del nodo en el mapa, así como los valores G, H y F utilizados por el algoritmo A*. También incluye un puntero al nodo padre y una lista de punteros a los nodos adyacentes.

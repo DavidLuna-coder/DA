@@ -1,1 +1,72 @@
-Escriba aquí su respuesta al ejercicio 2.
+\begin{lstlisting}
+    void DEF_LIB_EXPORTED calculatePath(AStarNode *originNode, AStarNode *targetNode, int cellsWidth, int cellsHeight, float mapWidth, float mapHeight, float **additionalCost, std::list<Vector3> &path)
+{
+    std::list<AStarNode *> Abierta;
+    int maxIter = 100;
+    originNode->G = 0;
+    originNode->H = _sdistance(originNode->position, targetNode->position);
+    originNode->F = originNode->G + originNode->H;
+    Abierta.push_back(originNode);
+    std::list<AStarNode *> Cerrada;
+    bool fin = false;
+    while (!fin && !Abierta.empty() && maxIter > 0)
+    {
+        Abierta.sort(NodeCompare);
+        AStarNode *Actual = Abierta.front();
+        Abierta.pop_front();
+        Cerrada.push_back(Actual);
+        if (Actual == targetNode)
+        {
+            path = recuperaCamino(originNode, targetNode);
+            fin = true;
+        }
+        else
+        {
+            for (auto it = Actual->adjacents.begin(); it != Actual->adjacents.end(); it++)
+            {
+                float coste = Actual->G + _sdistance(Actual->position, (*it)->position);
+                auto posAbierta = find(Abierta, *it);
+                auto posCerrada = find(Cerrada, *it);
+                if (coste < (*it)->G)
+                {
+                    if (posAbierta != Abierta.end())
+                    {
+                        Abierta.erase(posAbierta);
+                    }
+                    if (posCerrada != Cerrada.end())
+                    {
+                        Cerrada.erase(posCerrada);
+                    }
+                }
+
+                if (posAbierta == Abierta.end() && posCerrada == Cerrada.end())
+                {
+                    (*it)->G = coste;
+                    (*it)->H = _sdistance((*it)->position, targetNode->position);
+                    (*it)->F = (*it)->H + (*it)->G;
+                    (*it)->parent = Actual;
+
+                    Abierta.push_back(*it);
+                }
+            }
+        }
+        --maxIter;
+    }
+}
+
+
+
+bool NodeCompare(AStarNode *A, AStarNode *B) { return A->F < B->F; }
+std::list<AStarNode *>::const_iterator find(const std::list<AStarNode *> &Nodes, const AStarNode *value)
+{
+    std::list<AStarNode *>::const_iterator it = Nodes.begin();
+    for (it = Nodes.begin(); it != Nodes.end(); it++)
+    {
+        if (value == *it)
+        {
+            return it;
+        }
+    }
+    return it;
+}
+\end{lstlisting}

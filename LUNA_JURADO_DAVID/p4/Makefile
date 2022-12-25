@@ -10,7 +10,7 @@ FILES_TO_PACK_P2 = ../p2/DefensesSelection.cpp ../p2/*.tex ../p2/p2.pdf ../p2/Ma
 FILES_TO_PACK_P3 = ../p3/DefenseStrategy.cpp ../p3/*.tex ../p3/p3.pdf ../p3/Makefile ../p3/cronometro.h
 FILES_TO_PACK_P4 = ../p4/PathFind.cpp ../p4/*.tex ../p4/p4.pdf ../p4/Makefile ../p4/ppm.h
 CC = g++ # C++ compiler
-CFLAGS = -fPIC -O2 -ffloat-store -std=c++11 -fpermissive # -Wall -Wextra -g 
+CFLAGS = -fPIC -O2 -ffloat-store -std=c++11 -fpermissive #-Wall -Wextra -g #-O2
 LDFLAGS = -shared # linking flags
 RM = rm -f # rm command
 TARGET_LIB = libAttackStrategy.so # target lib
